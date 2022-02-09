@@ -17,13 +17,13 @@ user_script_paths = ['scripts.userscripts.myscripts']
 
 Upload a list of recent items from a Zotero library to a wiki page.
 
-USAGE:
+### Usage
 
 ```
   python pwb.py zotero-recently-added [options]
 ```
 
-OPTIONS:
+#### Options
 
 ```
   -key:KEY (required)
@@ -42,7 +42,7 @@ OPTIONS:
         Return items added in the most recent DAYS
 ```
 
-## `featured_pages`
+### `featured_pages`
 
 Locate the most recently added items in a featured category, and post a page
 to the wiki listing those pages with their summaries. Pages are linked using
@@ -59,13 +59,13 @@ creating a new MediaWiki extension with the same functionality, and it can be
 managed by a user who does not have administrative permissions over the wiki
 installation.
 
-USAGE:
+#### Usage
 
 ```
     python pywikibot.py featured_pages [options]
 ```
 
-OPTIONS:
+#### Options
 
 ```
   -category:CATEGORY (required)
