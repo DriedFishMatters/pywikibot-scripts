@@ -75,7 +75,15 @@ def featured(category='', limit=None, **kwargs):
     out = []
     titles = [page.title() for page in pages]
 
-    extracts = pywikibot.data.api.PropertyGenerator(site=site, prop='extracts|info', titles=titles, exsentences=5, exintro=1, exsectionformat='plain', explaintext=1, inprop='url')
+    extracts = pywikibot.data.api.PropertyGenerator(
+            site=site,
+            prop='extracts|info',
+            titles=titles,
+            exsentences=5,
+            exintro=1,
+            exsectionformat='plain',
+            explaintext=1,
+            inprop='url')
 
     for e in extracts:
         out.append(tpl.format(**e))
