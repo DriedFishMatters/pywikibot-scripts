@@ -13,7 +13,7 @@ user_script_paths = ['scripts.userscripts.myscripts']
 
 ## Scripts
 
-### `zotero_recently_added`
+### zotero_recently_added
 
 Upload a list of recent items from a Zotero library to a wiki page.
 
@@ -42,7 +42,7 @@ Upload a list of recent items from a Zotero library to a wiki page.
         Return items added in the most recent DAYS
 ```
 
-### `featured_pages`
+### featured_pages
 
 Locate the most recently added items in a featured category, and post a page
 to the wiki listing those pages with their summaries. Pages are linked using
