@@ -99,7 +99,7 @@ def _read_board(key='', token='', board_url='', headers='', query='', **kwargs):
         data['labels'] = [l['name'] for l in c['labels']]
         comments_list = [markdown.markdown(a['data']['text'])
                 for a in c['actions']]
-        data['comments'] = ''.join(comments_list) # separate paragraphs
+        data['comments'] = '\n----\n'.join(comments_list) # separate paragraphs
         data['name'] = c.get('name')
         data['id'] = c.get('id')
         data['description'] = markdown.markdown(c.get('desc'))
