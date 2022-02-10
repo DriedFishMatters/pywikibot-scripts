@@ -17,7 +17,7 @@ user_script_paths = ['scripts.userscripts.myscripts']
 
 Upload a list of recent items from a Zotero library to a wiki page.
 
-### Usage
+#### Usage
 
 ```
   python pwb.py zotero-recently-added [options]
@@ -76,6 +76,69 @@ installation.
         Text to insert at the top of the page
   -limit:LIMIT
         Number of pages to return.
+```
+
+### trello2wiki
+
+This script reads data from a Trello board and constructs a wiki page for each
+label on the board, listing the cards sharing that label and the status of each
+(taken from the card comments).
+
+The goal of this script is to produce a "status updates" overview, which allows
+all items for a given label to be viewed along with their comments, without
+having to open individual cards. It also allows users to track changes to the
+project using Special:RecentChanges in the wiki.
+
+Card data are presented as a table with three columns: name, comments, and due
+date. The Name field is linked to the matching Trello card, which will contain
+full information including the task description.
+
+#### Usage
+
+```
+    python pywikibot.py trello2wiki [options]
+```
+
+#### Options
+
+```
+  -key:KEY (required)
+        API key for Trello
+  -token:TOKEN (reuiqred)
+        API token for Trello
+  -board:BOARD (required)
+        The ID of the Trello board from which to retrieve data
+  -category:CATEGORY
+        Wikitext string containing the category or categories for the pages,
+        e.g., '[[Category:Foo]]'
+  -pagename_prefix:PREFIX
+        Prefix to be added to each pagename. You may wish to use a space,
+        hyphen, or other separator, e.g., 'Trello '. A page will be generated
+        for each label found on the Trello board.
+  -preface:PREFACE
+        Comment for editors, to be included at the top of each page. This might
+        be a warning that the page is generated automatically, e.g.,
+        '<!-- DO NOT EDIT! This file is updated by a bot. -->'.
+```
+
+### ical2wiki
+
+Script to read an iCalendar file, accessible from a public URL, and update a
+wiki page containing a listing of upcoming events from the calendar file.
+
+#### Usage
+
+```
+    python pywikibot.py ical2wiki [options]
+```
+
+#### Options
+
+```
+  -calendar:CALENDAR (required)
+        URL of the input iCalendar file
+  -pagename:PAGENAME (required)
+        Target wiki pagename
 ```
 
 ## Copying

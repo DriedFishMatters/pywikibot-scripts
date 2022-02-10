@@ -1,0 +1,6 @@
+pywikibot
+bs4
+pypandoc
+pyzotero
+markdown
+icalendar
