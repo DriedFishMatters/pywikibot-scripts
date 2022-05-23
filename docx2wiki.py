@@ -28,6 +28,9 @@ If using Zotero citations, the requirements are:
   2. The citations must be converted using the "Switch word processors"
      function in Zotero prior to processing
 
+For image processing to work, the ALT text for each image MUST be set in
+Word.
+
 OPTIONS:
 
   -pagename:NAME (required)
@@ -165,29 +168,22 @@ def convert_images(soup):
         img.string = '[[{}|thumb|center|600px|{}]]'.format(img['src'], img['alt'])
         img.name = 'p'
 
-"""
-We want the sha1 hashes of all thumbnail images on the wiki.
-We could cache this, so that we take a generator (all the source images) and request them one at a time, only jpeg and png.
 
-Options:
-1. Incrementally update a local hash index. This would take a long time to do the first time, but would be efficient (server calculation, not bandwidth).
-2. Implement a server script that hashes files on disk and that is updated with a cron job. This would take no bandwidth. It could use glob instead of the api to identify images. Requires direct server access. Would provide a lookup api.
+# We want the sha1 hashes of all thumbnail images on the wiki.
+# We could cache this, so that we take a generator (all the source images) and
+# request them one at a time, only jpeg and png.
+#
+# Options:
+# 1. Incrementally update a local hash index. This would take a long time to do
+# the first time, but would be efficient (server calculation, not bandwidth).
+# 2. Implement a server script that hashes files on disk and that is updated
+# with a cron job. This would take no bandwidth. It could use glob instead of
+# the api to identify images. Requires direct server access. Would provide a
+# lookup api.
+#
+# SEE:
+# https://realpython.com/fingerprinting-images-for-near-duplicate-detection/
 
-self.site.allimages()
-
-@cachier
-get_image(hash)
-
-- lookup fingerprint in the database (gives filename). If missing:
-    - request the list of all images.
-    - update the database. foreach image not in the database:
-        - calculate hash (fingerprint)
-        - store in database
-        - return
-
-https://realpython.com/fingerprinting-images-for-near-duplicate-detection/
-
-"""
 
 def get_local_image_hash(img_file):
     pil_image = Image.open(img_file)
@@ -198,12 +194,6 @@ def get_hashes(database):
     with dbm.open(database, flag='r') as db:
         hashes = {db[k].decode('utf-8'): k.decode('utf-8') for k in db.keys()}
     return hashes
-
-_wmf_extensions = {
-    "image/x-wmf": ".wmf",
-    "image/x-emf": ".emf",
-}
-
 
 class ImageWriter(object):
     def __init__(self, base, hashes):
@@ -220,7 +210,6 @@ class ImageWriter(object):
             with element.open() as image_source:
                 shutil.copyfileobj(image_source, image_dest)
 
-        # FIXME: Convert wmf to png
         # FIXME: Give an error if the image is not png or jpeg
         self._image_number += 1
         image_hash = get_local_image_hash(image_path)
@@ -339,65 +328,3 @@ def run(*args):
 
 if __name__ == '__main__':
     run()
-
-"""
-This basically works, though the formatting is a bit unreliable. Particularly if the authors have used tables for layout, or if there are no semantic headers, etc. The HTML conversion is lossy; we might actually have more success just copying and pasting into the visual editor.
-
-We could treat this as an image export utility only for now: extract the images from the docx, see if we already have them on the wiki, and if not upload them. The main challenge is that we don't actually have access to the image descriptions unless we embed those within the alt text, and that requires manual intervention. This would mainly be useful if we have a lot of images in a Word document that all need to be uploaded, with the following conditions:
-
-1. We don't know if the file is a cropped or scaled version of something that is already on the wiki.
-2. We just want to upload the images, not the text.
-3. We have too many files to upload via the upload wizard.
-
-In fact, we can just copy and paste the images one at a time, and that will prompt for upload.
-
-For report generation purposes, the advantage of going through the wiki is that it enforces consistent semantic formatting and enables reuse of text, citations, and images. It's difficult to do this without manual processing. If we upload these images
-
-This actually works reasonably well, but pandoc (or mammoth?) struggles on some of the tables it seems (it renders them as text). Choosing a different table layout seems to work, but that is silly. UPDATE: It seems to be resolved by "autofit".
-
-DOES NOT WORK. We have a gridspan=2 element in the source docx.
-<table>
-    <tr>
-        <td><p>Dried fish supply chain stage</p></td>
-        <td><p>Weights and measurements used</p></td>
-        <td colspan="2"><p>Amount</p></td>
-    </tr>
-    <tr>
-        <td><p>Purchasing the raw material (fish)</p></td>
-        <td><p>20 kg basket of Lactarius×6 baskets</p></td>
-        <td><p>₹600 × 6 = ₹3600</p></td>
-    </tr>
-    <tr>
-        <td><p>Salt per basket</p></td>
-        <td><p>5 kg for 20 kg fish   ×6 baskets</p></td>
-        <td><p>5×20×₹4 = ₹400</p></td>
-    </tr>
-    <tr>
-        <td><p>Transportation cost</p></td>
-        <td><p>150 per basket</p></td>
-        <td><p>₹150</p></td>
-    </tr>
-    <tr>
-        <td><p>Weight reduction by 60-65%</p></td>
-        <td><p>7-8 kg yield from 20 kg ×6 baskets</p></td>
-        <td><p>45 kg</p></td>
-    </tr>
-    <tr>
-        <td><p>Selling price at Karwar wholesale market</p></td>
-        <td><p>A basket of 45 kg of fish</p></td>
-        <td><p>₹6500-₹7000</p></td>
-    </tr>
-</table>
-
-Weights, measurements and prices along the dried Lactarius supply chain at Tadadi
-
-WORKS
-<table><tr><td><p>Dried fish supply chain stage</p></td><td><p>Weights and measurements used</p></td><td><p>Amount</p></td></tr><tr><td><p>Purchasing the raw material (fish)</p></td><td><p>20 kg basket of Lactarius×6 baskets</p></td><td><p>₹600 × 6 = ₹3600</p></td></tr><tr><td><p>Salt per basket</p></td><td><p>5 kg for 20 kg fish   ×6 baskets</p></td><td><p>5×20×₹4 = ₹400</p></td></tr><tr><td><p>Transportation cost</p></td><td><p>150 per basket</p></td><td><p>₹150</p></td></tr><tr><td><p>Weight reduction by 60-65%</p></td><td><p>7-8 kg yield from 20 kg ×6 baskets</p></td><td><p>45 kg</p></td></tr><tr><td><p>Selling price at Karwar wholesale market</p></td><td><p>A basket of 45 kg of fish</p></td><td><p>₹6500-₹7000</p></td></tr></table>
-
-
-
-For report generation:
-- Create a cover page as an image (svg with text and image content) --> upload to the wiki using a tool, or else generate with a cgi script
--
-
-"""
