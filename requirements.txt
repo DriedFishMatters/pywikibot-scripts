@@ -7,3 +7,4 @@ icalendar
 mammoth
 imagehash
 Pillow
+cachier
