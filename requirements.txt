@@ -4,3 +4,6 @@ pypandoc
 pyzotero
 markdown
 icalendar
+mammoth
+imagehash
+Pillow
