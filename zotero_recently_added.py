@@ -22,7 +22,7 @@ OPTIONS:
 
   -key:KEY (required)
         API key for Zotero
-  -library:TYPE (required)
+  -library_type:TYPE (required)
         'group' or 'user'
   -user_id:ID (required)
         The ID of the Zotero user
@@ -74,13 +74,13 @@ def _process_zotero_item(zot, item):
     return ' '.join(out)
 
 
-def bibliography(user_id=None, key=None, library='group', collection=None,
+def bibliography(user_id=None, key=None, library_type='group', collection=None,
                 days=None, **kwargs):
     """Generate a wikitext bibliography via the Zotero API."""
 
     out = []
 
-    zot = zotero.Zotero(user_id, library, api_key=key)
+    zot = zotero.Zotero(user_id, library_type, api_key=key)
     zot.add_parameters(
                 include='bib,data',
                 style='chicago-author-date',
@@ -111,7 +111,7 @@ def run(*args):
     options = {}
     local_args = pywikibot.handle_args(args)
 
-    required = ['key', 'library', 'user_id', 'collection', 'pagename']
+    required = ['key', 'library_type', 'user_id', 'collection', 'pagename']
 
     for arg in local_args:
         option, sep, value = arg.partition(':')
@@ -126,7 +126,7 @@ def run(*args):
     site = pywikibot.Site()
     mw = bibliography(**options)
 
-    if 'preface' in options:
+    if options.get('preface', None):
         mw = '\n\n'.join([options['preface'], mw])
     target = pywikibot.Page(site, options['pagename'])
 
