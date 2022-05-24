@@ -37,11 +37,14 @@ import pywikibot
 import requests
 import json
 
+import urllib.parse
+
 from slugify import slugify
 
 def download_attachment(headers, url, name, basedir):
     dirname = os.path.join(basedir, name.strip())
-    filename = os.path.join(dirname, os.path.basename(url))
+    decoded_url = urllib.parse.unquote(url)
+    filename = os.path.join(dirname, os.path.basename(decoded_url))
     if os.path.exists(filename):
         print('EXISTS: {}'.format(filename))
         return
@@ -85,6 +88,7 @@ def read_board(
         return
 
     for c in cards:
+        print(c['name'])
         name = slugify(c['name'], max_length=80)
         for a in c['attachments']:
             url = a['url']
