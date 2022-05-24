@@ -8,3 +8,4 @@ mammoth
 imagehash
 Pillow
 cachier
+python-slugify

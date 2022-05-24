@@ -37,13 +37,7 @@ import pywikibot
 import requests
 import json
 
-import dateutil.parser
-from datetime import datetime
-import urllib.parse
-
-import markdown
-import pypandoc
-
+from slugify import slugify
 
 def download_attachment(headers, url, name, basedir):
     dirname = os.path.join(basedir, name.strip())
@@ -91,10 +85,7 @@ def read_board(
         return
 
     for c in cards:
-        labels = '--'.join([l['name'] for l in c['labels']])
-        name = labels + '_' + c['name']
-        if len(name) > 80:
-            name = name[:80]
+        name = slugify(c['name'], max_length=80)
         for a in c['attachments']:
             url = a['url']
             if dry_run:
