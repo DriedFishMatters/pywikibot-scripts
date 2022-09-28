@@ -56,7 +56,7 @@ def run():
     rows.append('! ' + ' !! '.join(fieldnames))
 
     for page in pages:
-        html=page._get_parsed_page()
+        html=page.get_parsed_page()
         data = parse_table(html)
         rows.append('|-')
         rows.append('| ' + ' || '.join([data[f] or '' for f in fieldnames]))

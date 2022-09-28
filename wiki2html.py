@@ -123,7 +123,7 @@ def run(*args):
     for page in pages:
         print('Processing {}...'.format(page.title()))
         html = tpl.format( title=page.title(),
-                content=page._get_parsed_page(),
+                content=page.get_parsed_page(),
                 **options )
         html = postprocess(html, titles, options['out'], options['base'])
         pagename = slugify(page.title()) + '.html'

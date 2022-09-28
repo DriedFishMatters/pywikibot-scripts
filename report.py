@@ -84,7 +84,7 @@ def wiki_page(pagename):
     images = data['parse']['images']
     return (html, page.text, images)
 
-    # return (page._get_parsed_page(), page.text)
+    # return (page.get_parsed_page(), page.text)
 
 def unlink_notes(report):
     soup = BeautifulSoup(report, 'html.parser')
