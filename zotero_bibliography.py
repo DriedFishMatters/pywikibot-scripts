@@ -88,7 +88,8 @@ def _process_zotero_item(zot, item):
                 link = a['data']['url']
             else:
                 # api should give "links.enclosure.href" but this is absent?
-                link = a['links']['self']['href'] + '/file/view'
+                #link = a['links']['self']['href'] + '/file/view'
+                continue
             out.append('\n: [{} {}]'.format(link, a['data']['title']))
 
     abstract = item['data'].get('abstractNote', None)
